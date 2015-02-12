@@ -8,7 +8,7 @@
     <!-- my custom strings -->
     <string name="my_title">Welcome to MyIMDB !</string>
     <string name="movie_title">Type a movie title</string>
-    <string name="input_movie_title">input a movie title</string>
+    <string name="input_movie_title"/>
     <string name="button_go">search</string>
 
 

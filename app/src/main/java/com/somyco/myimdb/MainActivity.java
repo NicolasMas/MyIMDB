@@ -38,7 +38,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         m_search_movie_action.setOnClickListener(this);
 
         // movie to search linkage with m_movie_field
-        m_movie_field = (TextView)findViewById(R.id.movie_title);
+        m_movie_field = (TextView)findViewById(R.id.input_movie_title);
         // End of custom code
     }
 
@@ -77,11 +77,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void getMovie(String search_string)
     {
+        String m_url = "";
         String m_string;
-        String m_prefix = "http://www.omdbapi.com/?t=Top+Gun&y=&plot=short&r=json";
-
         try{
             m_string = URLEncoder.encode(search_string,"UTF-8");
+            m_url = "http://www.omdbapi.com/?t="+m_string+"&y=&plot=short&r=json";
+
 
         }catch(UnsupportedEncodingException e){
             e.printStackTrace();
@@ -89,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         AsyncHttpClient m_asynclient = new AsyncHttpClient();
-        m_asynclient.get(m_prefix, new JsonHttpResponseHandler(){
+        m_asynclient.get(m_url, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(JSONObject jsonObject) {
 
