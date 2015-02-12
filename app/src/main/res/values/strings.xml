@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- system strings -->
+    <string name="app_name">MyIMDB</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- my custom strings -->
+    <string name="my_title">Welcome to MyIMDB !</string>
+    <string name="movie_title">Type a movie title</string>
+    <string name="input_movie_title">input a movie title</string>
+    <string name="button_go">search</string>
+
+
+</resources>
