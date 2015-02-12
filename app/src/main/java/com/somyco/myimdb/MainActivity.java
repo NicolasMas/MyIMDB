@@ -2,6 +2,7 @@ package com.somyco.myimdb;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,11 +10,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     // Start of custom vars
-    TextView m_movie_field;
+    public TextView m_movie_field;
     Button m_search_movie_action;
     // end of custom vars
 
@@ -27,6 +36,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // Search button linkage and listener allocation
         m_search_movie_action = (Button) findViewById(R.id.button_go);
         m_search_movie_action.setOnClickListener(this);
+
+        // movie to search linkage with m_movie_field
+        m_movie_field = (TextView)findViewById(R.id.movie_title);
         // End of custom code
     }
 
@@ -57,8 +69,44 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View v) {
         // Let's just pop an animation for now..
         Toast.makeText(this, "Button test", Toast.LENGTH_LONG).show();
+        getMovie(m_movie_field.getText().toString());
     }
 
 
     // Start of custom methods
+
+    private void getMovie(String search_string)
+    {
+        String m_string;
+        String m_prefix = "http://www.omdbapi.com/?t=Top+Gun&y=&plot=short&r=json";
+
+        try{
+            m_string = URLEncoder.encode(search_string,"UTF-8");
+
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        AsyncHttpClient m_asynclient = new AsyncHttpClient();
+        m_asynclient.get(m_prefix, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+
+                Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
+                Log.d("myimdb", jsonObject.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Throwable throwable, JSONObject error) {
+
+                Toast.makeText(getApplicationContext(), "failed with!"+throwable.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("myimdb", statusCode + " " + throwable.getMessage());
+            }
+        }
+
+        );
+
+
+    }
 }
