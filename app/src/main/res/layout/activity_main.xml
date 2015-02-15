@@ -30,18 +30,20 @@
         <EditText
             android:id="@+id/input_movie_title"
             android:text="@string/input_movie_title"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             />
 
+        <Button
+            android:id="@+id/button_go"
+            android:text="@string/button_go"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           />
+
         </LinearLayout>
 
-    <Button
-        android:id="@+id/button_go"
-        android:text="@string/button_go"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
 
 
 
