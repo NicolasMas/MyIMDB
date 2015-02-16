@@ -109,7 +109,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onSuccess(JSONObject jsonObject) {
 
                 Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
-                Log.d("myimdb", jsonObject.toString());
+                //Log.d("myimdb", jsonObject.toString());
 
                 // update the data in your custom method.
                 mJSONAdapter.updateData(jsonObject.optJSONArray("Search"));

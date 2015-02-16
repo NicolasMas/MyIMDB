@@ -99,8 +99,9 @@ public class JSONAdapter extends BaseAdapter{
 
             // create a new "Holder" with subviews
             holder = new ViewHolder();
+            holder.iconeView = (ImageView) convertView.findViewById(R.id.img_thumbnail);
             holder.titleTextView = (TextView) convertView.findViewById(R.id.text_title);
-            holder.yearTextView = (TextView) convertView.findViewById(R.id.text_Year);
+            holder.yearTextView = (TextView) convertView.findViewById(R.id.text_year);
 
             // hang onto this holder for future recyclage
             convertView.setTag(holder);
@@ -116,6 +117,7 @@ public class JSONAdapter extends BaseAdapter{
         // Grab the title and author from the JSON
         String movieTitle = "";
         String movieYear = "";
+        String movieType="";
 
         if (jsonObject.has("Title")) {
             movieTitle = jsonObject.optString("Title");
@@ -124,6 +126,28 @@ public class JSONAdapter extends BaseAdapter{
         if (jsonObject.has("Year")) {
             movieYear = jsonObject.optString("Year");
         }
+
+        if (jsonObject.has("Type")){
+
+            movieType = jsonObject.optString("Type");
+
+            switch(movieType) {
+                case "movie":
+                    holder.iconeView.setImageResource(R.mipmap.camera_icone);
+
+                    break;
+                case "episode":
+                    holder.iconeView.setImageResource(R.mipmap.tv_icone);
+
+                    break;
+                case "game":
+                    holder.iconeView.setImageResource(R.mipmap.game_icone);
+                    break;
+                default:
+                    holder.iconeView.setImageResource(R.mipmap.ic_launcher);
+            }
+
+        }else{holder.iconeView.setImageResource(R.mipmap.ic_launcher);}
 
         // Send these Strings to the TextViews for display
         holder.titleTextView.setText(movieTitle);
@@ -137,6 +161,7 @@ public class JSONAdapter extends BaseAdapter{
     // this is used so you only ever have to do
 // inflation and finding by ID once ever per View
     private static class ViewHolder {
+        public ImageView iconeView;
         public TextView titleTextView;
         public TextView yearTextView;
     }
