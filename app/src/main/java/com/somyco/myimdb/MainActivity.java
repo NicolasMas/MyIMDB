@@ -1,5 +1,6 @@
 package com.somyco.myimdb;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     Button m_search_movie_action;
     JSONAdapter mJSONAdapter;
     ListView mainListView;
+    ProgressDialog m_Dialog;
     // end of custom vars
 
     @Override
@@ -35,6 +37,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         // Start of custom code
+
+        m_Dialog = new ProgressDialog(this);
+        m_Dialog.setMessage("Searching movies");
+        m_Dialog.setCancelable(false);
 
         // Search button linkage and listener allocation
         m_search_movie_action = (Button) findViewById(R.id.button_go);
@@ -104,14 +110,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         AsyncHttpClient m_asynclient = new AsyncHttpClient();
+        // Let's display the progress bar right after we created the http call
+        m_Dialog.show();
         m_asynclient.get(m_url, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(JSONObject jsonObject) {
 
-                Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
                 //Log.d("myimdb", jsonObject.toString());
 
                 // update the data in your custom method.
+                m_Dialog.dismiss();
                 mJSONAdapter.updateData(jsonObject.optJSONArray("Search"));
             }
 
