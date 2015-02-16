@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     // Start of custom vars
     public TextView m_movie_field;
     Button m_search_movie_action;
+    JSONAdapter mJSONAdapter;
+    ListView mainListView;
     // end of custom vars
 
     @Override
@@ -37,8 +40,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         m_search_movie_action = (Button) findViewById(R.id.button_go);
         m_search_movie_action.setOnClickListener(this);
 
+        // ListView linkage
+        mainListView = (ListView) findViewById(R.id.main_listview);
+        // TODO add an action listener
+
         // movie to search linkage with m_movie_field
         m_movie_field = (TextView)findViewById(R.id.input_movie_title);
+
+        mJSONAdapter = new JSONAdapter(this, getLayoutInflater());
+
+        // Set the ListView to use the ArrayAdapter
+        mainListView.setAdapter(mJSONAdapter);
+
+
         // End of custom code
     }
 
@@ -81,7 +95,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String m_string;
         try{
             m_string = URLEncoder.encode(search_string,"UTF-8");
-            m_url = "http://www.omdbapi.com/?t="+m_string+"&y=&plot=short&r=json";
+            m_url = "http://www.omdbapi.com/?s="+m_string+"&y=&plot=short&r=json";
 
 
         }catch(UnsupportedEncodingException e){
@@ -95,7 +109,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onSuccess(JSONObject jsonObject) {
 
                 Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
-                Log.d("myimdb", jsonObject.toString());
+                //Log.d("myimdb", jsonObject.toString());
+
+                // update the data in your custom method.
+                mJSONAdapter.updateData(jsonObject.optJSONArray("Search"));
             }
 
             @Override
