@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Created by nicolasmas on 15/2/15.
@@ -87,16 +88,62 @@ public class JSONAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        ViewHolder holder;
 
-        return null;
+        // check if the view already exists
+        // if so, no need to inflate and findViewById again!
+        if (convertView == null) {
+
+            // Inflate the custom row layout from your XML.
+            convertView = mInflater.inflate(R.layout.row_movies, null);
+
+            // create a new "Holder" with subviews
+            holder = new ViewHolder();
+            holder.titleTextView = (TextView) convertView.findViewById(R.id.text_title);
+            holder.yearTextView = (TextView) convertView.findViewById(R.id.text_Year);
+
+            // hang onto this holder for future recyclage
+            convertView.setTag(holder);
+        } else {
+
+            // skip all the expensive inflation/findViewById
+            // and just get the holder you already made
+            holder = (ViewHolder) convertView.getTag();
+        }
+        // More code after this
+        JSONObject jsonObject = (JSONObject) getItem(position);
+
+        // Grab the title and author from the JSON
+        String movieTitle = "";
+        String movieYear = "";
+
+        if (jsonObject.has("Title")) {
+            movieTitle = jsonObject.optString("Title");
+        }
+
+        if (jsonObject.has("Year")) {
+            movieYear = jsonObject.optString("Year");
+        }
+
+        // Send these Strings to the TextViews for display
+        holder.titleTextView.setText(movieTitle);
+        holder.yearTextView.setText(movieYear);
+
+        return convertView;
+
     }
 
     // Custom Methods
     // this is used so you only ever have to do
 // inflation and finding by ID once ever per View
     private static class ViewHolder {
-        public ImageView thumbnailImageView;
         public TextView titleTextView;
-        public TextView authorTextView;
+        public TextView yearTextView;
+    }
+
+    public void updateData(JSONArray jsonArray) {
+        // update the adapter's dataset
+        mJsonArray = jsonArray;
+        notifyDataSetChanged();
     }
 }
