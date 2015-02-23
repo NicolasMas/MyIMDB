@@ -10,6 +10,7 @@
     <string name="movie_title">Type a movie title</string>
     <string name="input_movie_title"/>
     <string name="button_go">search</string>
+    <string name="activity_details">Movie Detail</string>
 
 
 </resources>
