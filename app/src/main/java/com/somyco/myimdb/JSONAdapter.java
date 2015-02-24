@@ -111,7 +111,6 @@ public class JSONAdapter extends BaseAdapter{
             // and just get the holder you already made
             holder = (ViewHolder) convertView.getTag();
         }
-        // More code after this
         JSONObject jsonObject = (JSONObject) getItem(position);
 
         // Grab the title and author from the JSON

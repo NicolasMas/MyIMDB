@@ -1,6 +1,7 @@
 package com.somyco.myimdb;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public TextView m_movie_field;
     Button m_search_movie_action;
     JSONAdapter mJSONAdapter;
+    JSONAdapterDetailActivity mJSONDetailAdapter;
     ListView mainListView;
     ProgressDialog m_Dialog;
     // end of custom vars
@@ -54,10 +56,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // movie to search linkage with m_movie_field
         m_movie_field = (TextView)findViewById(R.id.input_movie_title);
 
+        // JSON Object to be manipulated
         mJSONAdapter = new JSONAdapter(this, getLayoutInflater());
+        mJSONDetailAdapter = new JSONAdapterDetailActivity();
 
         // Set the ListView to use the ArrayAdapter
         mainListView.setAdapter(mJSONAdapter);
+
 
 
         // End of custom code
@@ -90,7 +95,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View v) {
         // Let's just pop an animation for now..
         //Toast.makeText(this, "Button test", Toast.LENGTH_LONG).show();
-        getMovie(m_movie_field.getText().toString());
+        getMovie(m_movie_field.getText().toString(),"search");
     }
 
     /**
@@ -111,66 +116,51 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         // Let's get the id of the movie for details request
         JSONObject jsonObject = (JSONObject) mJSONAdapter.getItem(position);
-        Toast.makeText(this, "detail requested: " + jsonObject.toString(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "detail requested: " + jsonObject.toString(), Toast.LENGTH_LONG).show();
 
         // Retrieving the details for the specific movie
-        Toast.makeText(this, "detail IMDBID: " + jsonObject.optString("imdbID".toString()), Toast.LENGTH_LONG).show();
-        this.getMovieDetailIMDB(jsonObject.optString("imdbID"));
+       // Toast.makeText(this, "detail IMDBID: " + jsonObject.optString("imdbID".toString()), Toast.LENGTH_LONG).show();
+        this.getMovie(jsonObject.optString("imdbID".toString()),"detail");
+
+        //TODO implement the JSON adapter
+
+
+        String d_coverURL = mJSONDetailAdapter.m_detail.optString("Poster","");
+  //      String d_title    = mJSONDetailAdapter.m_detail.optString("Title","");
+    //    String d_released = mJSONDetailAdapter.m_detail.optString("Released","");
+
+        Toast.makeText(this, "post"+d_coverURL, Toast.LENGTH_LONG).show();
+
+
+       // Intent detailIntent = new Intent(this, DetailActivity.class);
+
     }
 
 
     // Start of custom methods
 
-    private void getMovie(String search_string)
+    private void getMovie(String search_string, String type)
     {
         String m_url = "";
         String m_string;
+        final String m_type = type;
         try{
+
             m_string = URLEncoder.encode(search_string,"UTF-8");
-            m_url = "http://www.omdbapi.com/?s="+m_string+"&y=&plot=short&r=json";
 
+            switch(m_type) {
+                case "search":
+                    m_url = "http://www.omdbapi.com/?s=" + m_string + "&y=&plot=short&r=json";
 
-        }catch(UnsupportedEncodingException e){
-            e.printStackTrace();
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+                    break;
+                case "detail":
+                    m_url = "http://www.omdbapi.com/?i=" + m_string + "&y=&plot=short&r=json";
 
-        AsyncHttpClient m_asynclient = new AsyncHttpClient();
-        // Let's display the progress bar right after we created the http call
-        m_Dialog.show();
-        m_asynclient.get(m_url, new JsonHttpResponseHandler(){
-                    @Override
-                    public void onSuccess(JSONObject jsonObject) {
-
-                        //Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
-                        //Log.d("myimdb", jsonObject.toString());
-
-                        // update the data in your custom method.
-                        m_Dialog.dismiss();
-                        mJSONAdapter.updateData(jsonObject.optJSONArray("Search"));
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Throwable throwable, JSONObject error) {
-
-                        Toast.makeText(getApplicationContext(), "failed with!"+throwable.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e("myimdb", statusCode + " " + throwable.getMessage());
-                    }
-                }
-
-        );
-
-
-    }
-
-    private void getMovieDetailIMDB(String imdbID)
-    {
-        String m_url = "";
-        String m_string;
-        try{
-            m_string = URLEncoder.encode(imdbID,"UTF-8");
-            m_url = "http://www.omdbapi.com/?i="+imdbID+"&y=&plot=short&r=json";
-
+                    break;
+                default:
+                    m_url = "http://www.omdbapi.com/?s=" + m_string + "&y=&plot=short&r=json";
+                    // NOT A GOOD DEFAULT
+            }
 
         }catch(UnsupportedEncodingException e){
             e.printStackTrace();
@@ -184,14 +174,27 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     @Override
                     public void onSuccess(JSONObject jsonObject) {
 
-                        Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Success! "+m_type, Toast.LENGTH_LONG).show();
                         Log.d("myimdb", jsonObject.toString());
 
                         // update the data in your custom method.
                         m_Dialog.dismiss();
-                        // TODO Add code for the detailed view JSONAdapter
-                        //mJSONAdapter.updateData(jsonObject.optJSONArray("Search"));
-                        Toast.makeText(getApplicationContext(),"details is"+jsonObject.toString(),Toast.LENGTH_LONG).show();
+
+
+                        switch(m_type) {
+                            case "search":
+                                mJSONAdapter.updateData(jsonObject.optJSONArray("Search"));
+
+                                break;
+                            case "detail":
+                                mJSONDetailAdapter.updateObject(jsonObject);
+
+                                break;
+                            default:
+                                Log.e("myimdb","error at switch case");
+                                // NOT A GOOD DEFAULT
+                        }
+
                     }
 
                     @Override
@@ -203,7 +206,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
 
         );
-
 
     }
 }

@@ -6,10 +6,14 @@ import android.view.TextureView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 /**
  * Created by nicolasmas on 23/2/15.
  */
 public class DetailActivity extends ActionBarActivity{
+
+    // Class Var
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,5 +29,9 @@ public class DetailActivity extends ActionBarActivity{
         ImageView imageView = (ImageView) findViewById(R.id.detail_movie_poster);
         TextView  titleView = (TextView) findViewById(R.id.detail_text_title);
         TextView  yearView = (TextView) findViewById(R.id.detail_text_year);
+
+
+
     }
+
 }
