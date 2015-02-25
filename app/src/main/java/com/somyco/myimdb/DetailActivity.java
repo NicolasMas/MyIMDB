@@ -2,10 +2,13 @@ package com.somyco.myimdb;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.TextureView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -14,6 +17,7 @@ import org.json.JSONObject;
 public class DetailActivity extends ActionBarActivity{
 
     // Class Var
+    JSONObject m_detail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,7 @@ public class DetailActivity extends ActionBarActivity{
         TextView  yearView = (TextView) findViewById(R.id.detail_text_year);
 
 
+        Toast.makeText(this, "intent", Toast.LENGTH_LONG).show();
 
     }
-
 }

@@ -29,9 +29,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public TextView m_movie_field;
     Button m_search_movie_action;
     JSONAdapter mJSONAdapter;
-    JSONAdapterDetailActivity mJSONDetailAdapter;
     ListView mainListView;
     ProgressDialog m_Dialog;
+
     // end of custom vars
 
     @Override
@@ -56,9 +56,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // movie to search linkage with m_movie_field
         m_movie_field = (TextView)findViewById(R.id.input_movie_title);
 
-        // JSON Object to be manipulated
+        // JSON Adapter to be manipulated
         mJSONAdapter = new JSONAdapter(this, getLayoutInflater());
-        mJSONDetailAdapter = new JSONAdapterDetailActivity();
 
         // Set the ListView to use the ArrayAdapter
         mainListView.setAdapter(mJSONAdapter);
@@ -120,19 +119,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         // Retrieving the details for the specific movie
        // Toast.makeText(this, "detail IMDBID: " + jsonObject.optString("imdbID".toString()), Toast.LENGTH_LONG).show();
-        this.getMovie(jsonObject.optString("imdbID".toString()),"detail");
+        this.getMovie(jsonObject.optString("imdbID".toString()), "detail");
 
         //TODO implement the JSON adapter
 
-
-        String d_coverURL = mJSONDetailAdapter.m_detail.optString("Poster","");
-  //      String d_title    = mJSONDetailAdapter.m_detail.optString("Title","");
-    //    String d_released = mJSONDetailAdapter.m_detail.optString("Released","");
-
-        Toast.makeText(this, "post"+d_coverURL, Toast.LENGTH_LONG).show();
-
-
-       // Intent detailIntent = new Intent(this, DetailActivity.class);
+        // Starting the intent
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        startActivity(detailIntent);
 
     }
 
@@ -144,6 +137,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String m_url = "";
         String m_string;
         final String m_type = type;
+
         try{
 
             m_string = URLEncoder.encode(search_string,"UTF-8");
@@ -177,9 +171,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         Toast.makeText(getApplicationContext(), "Success! "+m_type, Toast.LENGTH_LONG).show();
                         Log.d("myimdb", jsonObject.toString());
 
-                        // update the data in your custom method.
                         m_Dialog.dismiss();
-
 
                         switch(m_type) {
                             case "search":
@@ -187,12 +179,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                                 break;
                             case "detail":
-                                mJSONDetailAdapter.updateObject(jsonObject);
-
+                                Log.d("myimdb", jsonObject.toString());
+                               // TODO CODE TO ADD
                                 break;
                             default:
                                 Log.e("myimdb","error at switch case");
-                                // NOT A GOOD DEFAULT
+                                // TODO Change for a proper default
                         }
 
                     }
