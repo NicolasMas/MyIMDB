@@ -170,7 +170,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                     break;
                 case "detail":
-                    m_url = "http://www.omdbapi.com/?i=" + m_string + "&y=&plot=short&r=json";
+                    m_url = "http://www.omdbapi.com/?i=" + m_string + "&y=&plot=full&r=json";
 
                     break;
                 default:
@@ -218,6 +218,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                         Toast.makeText(getApplicationContext(), "failed with!"+throwable.getMessage(), Toast.LENGTH_LONG).show();
                         Log.e("myimdb", statusCode + " " + throwable.getMessage());
+
+                        m_Dialog.dismiss();
                     }
                 }
 
