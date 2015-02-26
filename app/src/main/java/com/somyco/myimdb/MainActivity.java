@@ -32,6 +32,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     ListView mainListView;
     ProgressDialog m_Dialog;
 
+    JSONObject detailJson;
+
     // end of custom vars
 
     @Override
@@ -56,12 +58,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // movie to search linkage with m_movie_field
         m_movie_field = (TextView)findViewById(R.id.input_movie_title);
 
-        // JSON Adapter to be manipulated
+        // JSON Adapter to be bound to the ListView
         mJSONAdapter = new JSONAdapter(this, getLayoutInflater());
-
         // Set the ListView to use the ArrayAdapter
         mainListView.setAdapter(mJSONAdapter);
 
+        detailJson = new JSONObject();
 
 
         // End of custom code
@@ -121,16 +123,29 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
        // Toast.makeText(this, "detail IMDBID: " + jsonObject.optString("imdbID".toString()), Toast.LENGTH_LONG).show();
         this.getMovie(jsonObject.optString("imdbID".toString()), "detail");
 
-        //TODO implement the JSON adapter
-
-        // Starting the intent
-        Intent detailIntent = new Intent(this, DetailActivity.class);
-        startActivity(detailIntent);
-
     }
 
 
     // Start of custom methods
+
+    private void craftDetails(JSONObject jsObj)
+    {
+       // Toast.makeText(this, "detail craft Method: " + jsObj.toString(), Toast.LENGTH_LONG).show();
+
+        // Starting the intent
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+
+        if (jsObj.has("Title")) {
+            detailIntent.putExtra("Title", jsObj.optString("Title"));
+        }
+
+        if (jsObj.has("Released")) {
+            detailIntent.putExtra("Released", jsObj.optString("Released"));
+        }
+
+        startActivity(detailIntent);
+
+    }
 
     private void getMovie(String search_string, String type)
     {
@@ -167,9 +182,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         m_asynclient.get(m_url, new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(JSONObject jsonObject) {
+                        super.onSuccess(jsonObject);
 
                         Toast.makeText(getApplicationContext(), "Success! "+m_type, Toast.LENGTH_LONG).show();
-                        Log.d("myimdb", jsonObject.toString());
+                        Log.d("myimdb", "On success" + jsonObject.toString());
 
                         m_Dialog.dismiss();
 
@@ -179,8 +195,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
                                 break;
                             case "detail":
-                                Log.d("myimdb", jsonObject.toString());
-                               // TODO CODE TO ADD
+                                Log.d("myimdb", "Detail call result" + jsonObject.toString());
+                                craftDetails(jsonObject);
+
                                 break;
                             default:
                                 Log.e("myimdb","error at switch case");

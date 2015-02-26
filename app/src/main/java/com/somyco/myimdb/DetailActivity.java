@@ -17,7 +17,8 @@ import org.json.JSONObject;
 public class DetailActivity extends ActionBarActivity{
 
     // Class Var
-    JSONObject m_detail;
+    String m_title = "";
+    String m_released = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +35,14 @@ public class DetailActivity extends ActionBarActivity{
         TextView  titleView = (TextView) findViewById(R.id.detail_text_title);
         TextView  yearView = (TextView) findViewById(R.id.detail_text_year);
 
+        m_title = this.getIntent().getExtras().getString("Title");
+        m_released = this.getIntent().getExtras().getString("Released");
 
-        Toast.makeText(this, "intent", Toast.LENGTH_LONG).show();
+
+        titleView.setText(m_title);
+        yearView.setText(m_released);
+
+        Toast.makeText(this, "intent"+""+m_title+""+m_released, Toast.LENGTH_LONG).show();
 
     }
 }
