@@ -143,7 +143,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             detailIntent.putExtra("Released", jsObj.optString("Released"));
         }
 
-        startActivity(detailIntent);
+        if(jsObj.has("Poster")){
+            detailIntent.putExtra("coverURL", jsObj.optString("Poster"));
+        }
+        if(jsObj.has("Plot")) {
+            detailIntent.putExtra("Plot", jsObj.optString("Plot"));
+        }
+
+            startActivity(detailIntent);
 
     }
 
